@@ -29,8 +29,40 @@ public class EnemyController : MonoBehaviour
     private int bulletDamage;
     private float bulletSpeed;
     private float bulletLife;
-    private float externalSpeedMultiplier = 1f;
     private float currentSlowMultiplier = 1f;
+
+    public void Initialize(GameManager manager, EnemySpawner spawner, Transform playerTransform, string enemyName, int health, float speed, int damage, int exp, Color color, float size, Sprite sprite)
+    {
+        gameManager = manager;
+        enemySpawner = spawner;
+        player = playerTransform;
+        maxHealth = health;
+        currentHealth = health;
+        moveSpeed = speed;
+        contactDamage = damage;
+        expReward = exp;
+        name = enemyName;
+
+        spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = sprite != null ? sprite : GameData.GetSquareSprite();
+        spriteRenderer.color = sprite != null ? Color.white : color;
+        spriteRenderer.sortingOrder = 1;
+        baseColor = spriteRenderer.color;
+
+        transform.localScale = new Vector3(size, size, 1f);
+
+        body = gameObject.AddComponent<Rigidbody2D>();
+        body.gravityScale = 0f;
+        body.freezeRotation = true;
+        body.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+        BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
+        collider.isTrigger = true;
+        collider.size = new Vector2(0.9f, 0.9f);
+
+        healthBar = gameObject.AddComponent<EnemyHealthBar>();
+        healthBar.Initialize(maxHealth);
+    }
 
     public void SetExternalSpeedMultiplier(float multiplier)
     {
