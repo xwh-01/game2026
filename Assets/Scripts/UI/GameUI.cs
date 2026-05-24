@@ -157,104 +157,116 @@ public class GameUI : MonoBehaviour
         skillNameText.text = stats.SkillName;
         string skillCdText = gameManager.PlayerController.GetSkillCooldownText();
         skillCooldownText.text = skillCdText;
-        skillCooldownText.color = skillCdText == "Ready" ? new Color(0.4f, 1f, 0.4f) : Color.white;
+        skillCooldownText.color = skillCdText == "就绪" ? new Color(0.4f, 1f, 0.4f) : Color.white;
         skillCooldownOverlay.fillAmount = gameManager.PlayerController.GetSkillCooldownRatio();
     }
 
     public void ShowUpgradePanel(List<UpgradeOption> options)
     {
         HideUpgradePanel();
-        upgradePanel = CreatePanel("Upgrade Panel", new Color(0f, 0f, 0f, 0.82f), new Vector2(720f, 520f));
+        upgradePanel = CreatePanel("Upgrade Panel", new Color(0f, 0f, 0f, 0.82f), new Vector2(820f, 420f));
 
-        Text title = CreateText(upgradePanel.transform, "Level Up!", 36, TextAnchor.MiddleCenter);
+        Text title = CreateText(upgradePanel.transform, "Level Up!", 38, TextAnchor.MiddleCenter);
         title.color = new Color(1f, 0.85f, 0.2f);
         title.fontStyle = FontStyle.Bold;
-        SetRect(title.rectTransform, new Vector2(0.5f, 0.93f), new Vector2(0.5f, 0.93f), Vector2.zero, new Vector2(400f, 50f));
+        SetRect(title.rectTransform, new Vector2(0.5f, 0.88f), new Vector2(0.5f, 0.88f), Vector2.zero, new Vector2(400f, 50f));
 
-        Text chooseText = CreateText(upgradePanel.transform, "Choose one upgrade", 20, TextAnchor.MiddleCenter);
-        chooseText.color = new Color(0.7f, 0.75f, 0.85f);
-        SetRect(chooseText.rectTransform, new Vector2(0.5f, 0.86f), new Vector2(0.5f, 0.86f), Vector2.zero, new Vector2(360f, 30f));
+        Text chooseText = CreateText(upgradePanel.transform, "Choose one upgrade", 18, TextAnchor.MiddleCenter);
+        chooseText.color = new Color(0.65f, 0.7f, 0.8f);
+        SetRect(chooseText.rectTransform, new Vector2(0.5f, 0.80f), new Vector2(0.5f, 0.80f), Vector2.zero, new Vector2(360f, 28f));
 
         for (int i = 0; i < options.Count; i++)
         {
-            UpgradeOption option = options[i];
-            float yAnchor = 0.72f - i * 0.19f;
-            BuildUpgradeCard(upgradePanel.transform, option, yAnchor);
+            float xOffset = (i - 1f) * 240f;
+            BuildUpgradeCard(upgradePanel.transform, options[i], xOffset);
         }
     }
 
-    private void BuildUpgradeCard(Transform parent, UpgradeOption option, float yAnchor)
+    private void BuildUpgradeCard(Transform parent, UpgradeOption option, float xOffset)
     {
-        string category;
-        Color categoryColor;
-        Color cardColor;
+        UpgradeCategory cat = option.Category;
+        Color cardColor, borderColor, labelColor;
 
-        switch (option.Type)
+        switch (cat)
         {
-            case UpgradeType.FireballSplit:
-            case UpgradeType.ArcaneRainBigger:
-            case UpgradeType.ArcaneRainLonger:
-            case UpgradeType.ArcaneRainFaster:
-            case UpgradeType.FrostField:
-            case UpgradeType.ManaSurge:
-                category = "Mage";
-                categoryColor = new Color(0.45f, 0.35f, 1f);
-                cardColor = new Color(0.1f, 0.08f, 0.28f);
+            case UpgradeCategory.Mage:
+                cardColor = new Color(0.06f, 0.05f, 0.22f);
+                borderColor = new Color(0.45f, 0.35f, 1f, 0.85f);
+                labelColor = new Color(0.55f, 0.45f, 1f);
                 break;
-            case UpgradeType.SwordWavePierce:
-            case UpgradeType.SwordWaveBigger:
-            case UpgradeType.DashSlashHeal:
-            case UpgradeType.DashSlashCooldown:
-            case UpgradeType.EarthSplitter:
-            case UpgradeType.BattleFrenzy:
-                category = "Warrior";
-                categoryColor = new Color(1f, 0.45f, 0.2f);
-                cardColor = new Color(0.25f, 0.08f, 0.05f);
+            case UpgradeCategory.Warrior:
+                cardColor = new Color(0.2f, 0.05f, 0.04f);
+                borderColor = new Color(1f, 0.4f, 0.15f, 0.85f);
+                labelColor = new Color(1f, 0.45f, 0.15f);
+                break;
+            case UpgradeCategory.Rare:
+                cardColor = new Color(0.12f, 0.08f, 0.02f);
+                borderColor = new Color(1f, 0.75f, 0.15f, 0.9f);
+                labelColor = new Color(1f, 0.8f, 0.2f);
                 break;
             default:
-                category = "Common";
-                categoryColor = new Color(0.4f, 0.65f, 0.9f);
-                cardColor = new Color(0.08f, 0.12f, 0.25f);
+                cardColor = new Color(0.06f, 0.08f, 0.18f);
+                borderColor = new Color(0.35f, 0.5f, 0.75f, 0.7f);
+                labelColor = new Color(0.45f, 0.65f, 0.9f);
                 break;
         }
 
-        GameObject cardObj = new GameObject("Upgrade Card " + option.Title);
-        cardObj.transform.SetParent(parent, false);
-        Image cardBg = cardObj.AddComponent<Image>();
-        cardBg.sprite = whiteSprite;
-        cardBg.color = cardColor;
-        Button cardButton = cardObj.AddComponent<Button>();
+        string labelText = cat.ToString().ToUpper();
 
+        GameObject cardObj = new GameObject("Upgrade Card");
+        cardObj.transform.SetParent(parent, false);
+
+        GameObject borderObj = new GameObject("Card Border");
+        borderObj.transform.SetParent(cardObj.transform, false);
+        Image borderImg = borderObj.AddComponent<Image>();
+        borderImg.sprite = whiteSprite;
+        borderImg.color = borderColor;
+        borderImg.raycastTarget = false;
+        SetRect(borderImg.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        GameObject innerObj = new GameObject("Card Inner");
+        innerObj.transform.SetParent(cardObj.transform, false);
+        Image innerImg = innerObj.AddComponent<Image>();
+        innerImg.sprite = whiteSprite;
+        innerImg.color = cardColor;
+        innerImg.raycastTarget = false;
+        SetRect(innerImg.rectTransform, new Vector2(0.02f, 0.02f), new Vector2(0.98f, 0.98f), Vector2.zero, Vector2.zero);
+
+        Button cardButton = cardObj.AddComponent<Button>();
         ColorBlock colors = cardButton.colors;
-        colors.normalColor = cardColor;
-        colors.highlightedColor = cardColor * 1.5f;
-        colors.pressedColor = cardColor * 0.6f;
+        colors.normalColor = Color.clear;
+        colors.highlightedColor = new Color(1f, 1f, 1f, 0.25f);
+        colors.pressedColor = new Color(0f, 0f, 0f, 0.3f);
         colors.fadeDuration = 0.1f;
         cardButton.colors = colors;
 
-        cardButton.onClick.AddListener(delegate { upgradeManager.ApplyUpgrade(option); });
+        cardButton.onClick.AddListener(delegate
+        {
+            if (upgradePanel != null)
+            {
+                upgradeManager.ApplyUpgrade(option);
+            }
+        });
 
-        SetRect(cardObj.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 80f));
-        cardObj.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, yAnchor);
-        cardObj.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, yAnchor);
-        cardObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        RectTransform cardRect = cardObj.GetComponent<RectTransform>();
+        SetRect(cardRect, new Vector2(0.5f, 0.52f), new Vector2(0.5f, 0.52f), new Vector2(xOffset, 0f), new Vector2(220f, 280f));
 
-        Text nameText = CreateText(cardObj.transform, option.Title, 22, TextAnchor.MiddleLeft);
-        nameText.fontStyle = FontStyle.Bold;
-        nameText.color = Color.white;
-        nameText.raycastTarget = false;
-        SetRect(nameText.rectTransform, new Vector2(0.03f, 0.55f), new Vector2(0.75f, 0.95f), Vector2.zero, Vector2.zero);
+        Text label = CreateText(cardObj.transform, labelText, 14, TextAnchor.MiddleCenter);
+        label.color = labelColor;
+        label.fontStyle = FontStyle.Bold;
+        label.raycastTarget = false;
+        SetRect(label.rectTransform, new Vector2(0.05f, 0.82f), new Vector2(0.95f, 0.95f), Vector2.zero, Vector2.zero);
 
-        Text descText = CreateText(cardObj.transform, option.Description, 15, TextAnchor.MiddleLeft);
-        descText.color = new Color(0.7f, 0.75f, 0.8f);
-        descText.raycastTarget = false;
-        SetRect(descText.rectTransform, new Vector2(0.03f, 0.05f), new Vector2(0.75f, 0.5f), Vector2.zero, Vector2.zero);
+        Text name = CreateText(cardObj.transform, option.Title, 17, TextAnchor.MiddleCenter);
+        name.color = Color.white;
+        name.fontStyle = FontStyle.Bold;
+        name.raycastTarget = false;
+        SetRect(name.rectTransform, new Vector2(0.05f, 0.58f), new Vector2(0.95f, 0.79f), Vector2.zero, Vector2.zero);
 
-        Text categoryText = CreateText(cardObj.transform, category, 14, TextAnchor.MiddleRight);
-        categoryText.color = categoryColor;
-        categoryText.fontStyle = FontStyle.Bold;
-        categoryText.raycastTarget = false;
-        SetRect(categoryText.rectTransform, new Vector2(0.78f, 0.2f), new Vector2(0.97f, 0.8f), Vector2.zero, Vector2.zero);
+        Text desc = CreateText(cardObj.transform, option.Description, 13, TextAnchor.MiddleCenter);
+        desc.color = new Color(0.65f, 0.68f, 0.75f);
+        desc.raycastTarget = false;
+        SetRect(desc.rectTransform, new Vector2(0.05f, 0.18f), new Vector2(0.95f, 0.55f), Vector2.zero, Vector2.zero);
     }
 
     public void HideUpgradePanel()

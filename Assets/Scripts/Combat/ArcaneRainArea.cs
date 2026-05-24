@@ -79,14 +79,39 @@ public class ArcaneRainArea : MonoBehaviour
         if (slowMultiplier >= 1f) return;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(center, radius);
+        HashSet<EnemyController> currentInArea = new HashSet<EnemyController>();
+
         for (int i = 0; i < hits.Length; i++)
         {
             EnemyController enemy = hits[i].GetComponent<EnemyController>();
             if (enemy != null)
             {
+                currentInArea.Add(enemy);
                 enemy.SetExternalSpeedMultiplier(slowMultiplier);
-                slowedEnemies.Add(enemy);
             }
+        }
+
+        HashSet<EnemyController> toRestore = new HashSet<EnemyController>();
+        foreach (EnemyController enemy in slowedEnemies)
+        {
+            if (enemy != null && !currentInArea.Contains(enemy))
+            {
+                toRestore.Add(enemy);
+            }
+        }
+
+        foreach (EnemyController enemy in toRestore)
+        {
+            if (enemy != null)
+            {
+                enemy.SetExternalSpeedMultiplier(1f);
+            }
+            slowedEnemies.Remove(enemy);
+        }
+
+        foreach (EnemyController enemy in currentInArea)
+        {
+            slowedEnemies.Add(enemy);
         }
     }
 

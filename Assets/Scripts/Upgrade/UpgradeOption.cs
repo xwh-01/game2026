@@ -21,16 +21,26 @@ public enum UpgradeType
     BattleFrenzy
 }
 
+public enum UpgradeCategory
+{
+    Common,
+    Mage,
+    Warrior,
+    Rare
+}
+
 public class UpgradeOption
 {
     public string Title;
     public string Description;
     public UpgradeType Type;
+    public UpgradeCategory Category;
 
-    public UpgradeOption(string title, string description, UpgradeType type)
+    public UpgradeOption(string title, string description, UpgradeType type, UpgradeCategory category = UpgradeCategory.Common)
     {
         Title = title;
         Description = description;
         Type = type;
+        Category = category;
     }
 }

@@ -194,43 +194,43 @@ public static class GameData
 
         List<UpgradeOption> pool = new List<UpgradeOption>
         {
-            new UpgradeOption("\u666e\u653b\u4f24\u5bb3 +10", "Attack Damage +10", UpgradeType.AttackDamage),
-            new UpgradeOption("\u6280\u80fd\u4f24\u5bb3 +5", "Skill Damage +5", UpgradeType.SkillDamage),
-            new UpgradeOption("\u6700\u5927\u751f\u547d +20", "Max HP +20 and heal 20 HP", UpgradeType.MaxHealth),
-            new UpgradeOption("\u79fb\u52a8\u901f\u5ea6 +10%", "Move Speed +10%", UpgradeType.MoveSpeed),
-            new UpgradeOption("\u666e\u653b\u51b7\u5374 -10%", "Attack Cooldown -10%", UpgradeType.AttackCooldown),
-            new UpgradeOption("\u751f\u547d\u6062\u590d +40", "Heal 40 HP instantly", UpgradeType.Heal),
-            new UpgradeOption("\u6280\u80fd\u51b7\u5374 -10%", "Skill Cooldown -10%", UpgradeType.SkillCooldown),
+            new UpgradeOption("\u666e\u653b\u4f24\u5bb3 +10", "Attack Damage +10", UpgradeType.AttackDamage, UpgradeCategory.Common),
+            new UpgradeOption("\u6280\u80fd\u4f24\u5bb3 +5", "Skill Damage +5", UpgradeType.SkillDamage, UpgradeCategory.Common),
+            new UpgradeOption("\u6700\u5927\u751f\u547d +20", "Max HP +20 and heal 20 HP", UpgradeType.MaxHealth, UpgradeCategory.Common),
+            new UpgradeOption("\u79fb\u52a8\u901f\u5ea6 +10%", "Move Speed +10%", UpgradeType.MoveSpeed, UpgradeCategory.Common),
+            new UpgradeOption("\u666e\u653b\u51b7\u5374 -10%", "Attack Cooldown -10%", UpgradeType.AttackCooldown, UpgradeCategory.Common),
+            new UpgradeOption("\u751f\u547d\u6062\u590d +40", "Heal 40 HP instantly", UpgradeType.Heal, UpgradeCategory.Common),
+            new UpgradeOption("\u6280\u80fd\u51b7\u5374 -10%", "Skill Cooldown -10%", UpgradeType.SkillCooldown, UpgradeCategory.Common),
         };
 
         if (SelectedCharacter == CharacterType.Mage)
         {
             if (stats == null || stats.AttackProjectileCount < 3)
-                pool.Add(new UpgradeOption("Fireball Split", "Shoot 3 fireballs in a small spread.", UpgradeType.FireballSplit));
+                pool.Add(new UpgradeOption("Fireball Split", "Shoot 3 fireballs in a small spread.", UpgradeType.FireballSplit, UpgradeCategory.Rare));
 
-            pool.Add(new UpgradeOption("Arcane Rain Bigger", "Arcane Rain area increased.", UpgradeType.ArcaneRainBigger));
-            pool.Add(new UpgradeOption("Arcane Rain Longer", "Arcane Rain lasts longer.", UpgradeType.ArcaneRainLonger));
-            pool.Add(new UpgradeOption("Arcane Rain Faster", "Arcane Rain ticks faster.", UpgradeType.ArcaneRainFaster));
+            pool.Add(new UpgradeOption("Arcane Rain Bigger", "Arcane Rain area increased.", UpgradeType.ArcaneRainBigger, UpgradeCategory.Mage));
+            pool.Add(new UpgradeOption("Arcane Rain Longer", "Arcane Rain lasts longer.", UpgradeType.ArcaneRainLonger, UpgradeCategory.Mage));
+            pool.Add(new UpgradeOption("Arcane Rain Faster", "Arcane Rain ticks faster.", UpgradeType.ArcaneRainFaster, UpgradeCategory.Mage));
 
             if (stats == null || stats.RainSlowMultiplier > 0.6f)
-                pool.Add(new UpgradeOption("Frost Field", "Enemies inside Arcane Rain are slowed more.", UpgradeType.FrostField));
+                pool.Add(new UpgradeOption("Frost Field", "Enemies inside Arcane Rain are slowed more.", UpgradeType.FrostField, UpgradeCategory.Mage));
 
-            pool.Add(new UpgradeOption("Mana Surge", "Skill cooldown reduced by 18%.", UpgradeType.ManaSurge));
+            pool.Add(new UpgradeOption("Mana Surge", "Skill cooldown reduced by 18%.", UpgradeType.ManaSurge, UpgradeCategory.Mage));
         }
         else
         {
             if (stats == null || !stats.ProjectilePierce)
-                pool.Add(new UpgradeOption("Sword Wave Pierce", "Sword waves pierce through enemies.", UpgradeType.SwordWavePierce));
+                pool.Add(new UpgradeOption("Sword Wave Pierce", "Sword waves pierce through enemies.", UpgradeType.SwordWavePierce, UpgradeCategory.Rare));
 
-            pool.Add(new UpgradeOption("Sword Wave Bigger", "Sword waves become larger.", UpgradeType.SwordWaveBigger));
-            pool.Add(new UpgradeOption("Dash Slash Heal", "Recover HP when Dash Slash hits enemies.", UpgradeType.DashSlashHeal));
-            pool.Add(new UpgradeOption("Dash Slash Cooldown", "Dash Slash cooldown reduced.", UpgradeType.DashSlashCooldown));
+            pool.Add(new UpgradeOption("Sword Wave Bigger", "Sword waves become larger.", UpgradeType.SwordWaveBigger, UpgradeCategory.Warrior));
+            pool.Add(new UpgradeOption("Dash Slash Heal", "Recover HP when Dash Slash hits enemies.", UpgradeType.DashSlashHeal, UpgradeCategory.Warrior));
+            pool.Add(new UpgradeOption("Dash Slash Cooldown", "Dash Slash cooldown reduced.", UpgradeType.DashSlashCooldown, UpgradeCategory.Warrior));
 
             if (stats == null || !stats.DashEndExplosion)
-                pool.Add(new UpgradeOption("Earth Splitter", "Dash Slash ends with an explosion.", UpgradeType.EarthSplitter));
+                pool.Add(new UpgradeOption("Earth Splitter", "Dash Slash ends with an explosion.", UpgradeType.EarthSplitter, UpgradeCategory.Warrior));
 
             if (stats == null || stats.BattleFrenzyDuration <= 0f)
-                pool.Add(new UpgradeOption("Battle Frenzy", "After hitting with Dash Slash, attack faster for 2s.", UpgradeType.BattleFrenzy));
+                pool.Add(new UpgradeOption("Battle Frenzy", "After hitting with Dash Slash, attack faster for 2s.", UpgradeType.BattleFrenzy, UpgradeCategory.Warrior));
         }
 
         return pool;

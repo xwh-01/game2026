@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
         float remaining = nextSkillTime - Time.time;
         if (remaining <= 0f)
         {
-            return "Ready";
+            return "就绪";
         }
 
         return remaining.ToString("0.0") + "s";
